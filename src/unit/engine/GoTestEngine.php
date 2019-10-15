@@ -8,6 +8,7 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
   const USE_GODEP_KEY = 'unit.go.godep';
   const USE_RACE_KEY = 'unit.go.race';
   const USE_SHORT_KEY = 'unit.go.short';
+  const USE_VERBOSE_KEY = 'unit.go.verbose';
   private $projectRoot;
 
   public function run() {
@@ -81,9 +82,10 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
 
   protected function getDefaultConfig() {
     return array(
-      self::USE_GODEP_KEY => false,
-      self::USE_RACE_KEY  => true,
-      self::USE_SHORT_KEY => false,
+      self::USE_GODEP_KEY   => false,
+      self::USE_RACE_KEY    => true,
+      self::USE_SHORT_KEY   => false,
+      self::USE_VERBOSE_KEY => true,
     );
   }
 
@@ -93,7 +95,11 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
       $cmd = 'godep ';
     }
 
-    $cmd .= 'go test -v';
+    $cmd .= 'go test';
+
+    if ($this->useVerbose()) {
+      $cmd .= ' -v';
+    }
 
     if ($this->useShort()) {
       $cmd .= " -short";
@@ -132,6 +138,14 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
       return true;
     }
 
+    return false;
+  }
+
+  protected function useVerbose() {
+    $default = idx($this->getDefaultConfig(), self::USE_VERBOSE_KEY);
+    if ($this->getConfig(self::USE_VERBOSE_KEY, $default) === "true") {
+      return true;
+    }
     return false;
   }
 
