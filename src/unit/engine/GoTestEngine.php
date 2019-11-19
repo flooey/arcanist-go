@@ -115,8 +115,8 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
   }
 
   protected function useRace() {
-    $default = idx($this->getDefaultConfig(), self::USE_RACE_KEY);
-    if ($this->getConfig(self::USE_RACE_KEY, $default) === "false") {
+    $config_val = $this->getConfig(self::USE_RACE_KEY);
+    if ($config_val === false || $config_val === "false") {
       return false;
     }
 
@@ -129,8 +129,8 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
   }
 
   protected function useGodep() {
-    $default = idx($this->getDefaultConfig(), self::USE_GODEP_KEY);
-    if ($this->getConfig(self::USE_GODEP_KEY, $default) === "false") {
+    $config_val = $this->getConfig(self::USE_GODEP_KEY);
+    if ($config_val === false || $config_val === "false") {
       return false;
     }
 
@@ -142,22 +142,23 @@ final class GoTestEngine extends ArcanistUnitTestEngine {
   }
 
   protected function useVerbose() {
-    $default = idx($this->getDefaultConfig(), self::USE_VERBOSE_KEY);
-    if ($this->getConfig(self::USE_VERBOSE_KEY, $default) === "true") {
+    $config_val = $this->getConfig(self::USE_VERBOSE_KEY);
+    if ($config_val === true || $config_val === "true") {
       return true;
     }
     return false;
   }
 
   protected function useShort() {
-    $default = idx($this->getDefaultConfig(), self::USE_SHORT_KEY);
-    if ($this->getConfig(self::USE_SHORT_KEY, $default) === "true") {
+    $config_val = $this->getConfig(self::USE_SHORT_KEY);
+    if ($config_val === true || $config_val === "true") {
       return true;
     }
     return false;
   }
 
-  protected function getConfig($key, $default = null) {
+  protected function getConfig($key) {
+    $default = idx($this->getDefaultConfig(), $key);
     return $this->getConfigurationManager()->getConfigFromAnySource(
       $key,
       $default);
